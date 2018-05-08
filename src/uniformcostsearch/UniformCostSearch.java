@@ -44,8 +44,8 @@ public class UniformCostSearch {
     public static Node uniformCostSearch(Node[] graph, String start, String goal) {
 
         Node n, m;
-        List<Node> OPEN = new ArrayList<Node>();
-        List<Node> CLOSED = new ArrayList<Node>();
+        List<Node> OPEN = new ArrayList<>();
+        List<Node> CLOSED = new ArrayList<>();
 
         Node s = getNode(graph, start);
 
