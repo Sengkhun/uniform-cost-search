@@ -43,7 +43,7 @@ public class UniformCostSearch {
 
     public static Node uniformCostSearch(Node[] graph, String start, String goal) {
 
-        Node n, m;
+        Node n, m, tmp;
         List<Node> OPEN = new ArrayList<>();
         List<Node> CLOSED = new ArrayList<>();
 
@@ -77,27 +77,31 @@ public class UniformCostSearch {
                 if (m.getWeight() == -1) {
                     m = m.getChild();
                     continue;
-                }
-
-                // if m ε [OPEN ⋃ CLOSED]
-                if (checkElement(OPEN, m.getName()) || checkElement(CLOSED, m.getName())) {
-
-                    // Set C(m) = min{ C(m), C(n)+C(n, m)}
-                    if (m.getWeight() < n.getCost() + m.getWeight()) {
-
-                        // if C(m) has decreased and m є CLOSED, move it to OPEN
-                        if (checkElement(CLOSED, m.getName())) {
-                            OPEN.add(m);
-                        }
-
-                    }
-
-                } else { // if m ∉ [OPEN ⋃ CLOSED]
-
+                }                           
+                
+                // if m ∉ [OPEN ⋃ CLOSED]
+                if (checkElement(OPEN, m.getName()) == null && checkElement(CLOSED, m.getName()) == null) {
+                    
                     // Set C(m) = C(n) + C(n, m) and insert m in OPEN
                     m.setCost(n.getCost() + m.getWeight());
                     OPEN.add(m);
 
+                } else { // if m ε [OPEN ⋃ CLOSED]
+
+                    tmp = checkElement(CLOSED, m.getName());
+                    
+                    if (tmp != null) {
+                        
+                        // Set C(m) = min{ C(m), C(n)+C(n, m)}
+                        if (tmp.getCost() < n.getCost() + m.getWeight()) {
+                            
+                            // if C(m) has decreased and m є CLOSED, move it to OPEN
+                            CLOSED.remove(tmp);
+                            OPEN.add(tmp);
+                        }
+                        
+                    }
+                    
                 }
 
                 // Next Successor
@@ -107,16 +111,16 @@ public class UniformCostSearch {
         return null;
     }
 
-    public static boolean checkElement(List<Node> arr, String name) {
+    public static Node checkElement(List<Node> arr, String name) {
 
         for (Node node : arr) {
 
             if (node.getName().equals(name)) {
-                return true;
+                return node;
             }
 
         }
-        return false;
+        return null;
     }
 
     public static Node getMinimunCostNode(List<Node> graph) {
@@ -129,7 +133,7 @@ public class UniformCostSearch {
 
         for (Node n : graph) {
 
-            if (n.getWeight() < currentNode.getWeight()) {
+            if (n.getCost() < currentNode.getCost()) {
                 currentNode = n;
             }
 
@@ -156,7 +160,7 @@ public class UniformCostSearch {
 
         for (int i = 0; i < size; i++) {
 
-            int length = new Random().nextInt(size - 1) + 1;
+            int length = new Random().nextInt(size - 4) + 1;
             name = Character.toString((char) (i + 65));
             used = name;
 
