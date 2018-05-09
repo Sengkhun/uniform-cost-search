@@ -88,18 +88,36 @@ public class UniformCostSearch {
 
                 } else { // if m ε [OPEN ⋃ CLOSED]
 
-                    tmp = checkElement(CLOSED, m.getName());
+                    // C(n) + C(n, m)
+                    int c = n.getCost() + m.getWeight();
                     
+                    tmp = checkElement(CLOSED, m.getName());                                        
                     if (tmp != null) {
                         
                         // Set C(m) = min{ C(m), C(n)+C(n, m)}
-                        if (tmp.getCost() < n.getCost() + m.getWeight()) {
+                        if (c < tmp.getCost()) {
                             
                             // if C(m) has decreased and m є CLOSED, move it to OPEN
                             CLOSED.remove(tmp);
+                            tmp.setCost(c);
                             OPEN.add(tmp);
                         }
                         
+                    }
+                    
+                    
+                    tmp = checkElement(OPEN, m.getName());
+                    if (tmp != null) {
+                        
+                        // Set C(m) = min{ C(m), C(n)+C(n, m)}
+                        if (c < tmp.getCost()) {
+                            
+                            // if C(m) has decreased and m є OPEN, replace the current noe in OPEN
+                            OPEN.remove(tmp);
+                            tmp.setCost(c);
+                            OPEN.add(tmp);
+                        }
+                    
                     }
                     
                 }
